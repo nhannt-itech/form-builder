@@ -1,0 +1,11 @@
+{
+	"compilerOptions": {
+		"experimentalDecorators": true,
+		"strictPropertyInitialization": false,
+		"target": "es6",
+		"module": "commonjs",
+		"outDir": "./build",
+		"strict": true,
+		"esModuleInterop": true
+	}
+}
