@@ -2,10 +2,9 @@ const knexfile = {
 	development: {
 		client: "postgresql",
 		connection: {
-			database: "form_builder_db",
+			database: "formbuilder_db",
 			user: "postgres",
-			password: "Admin123@",
-			// password: "1qaz!QAZ",
+			password: "1qaz!QAZ",
 		},
 		pool: {
 			min: 2,
