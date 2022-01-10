@@ -35,7 +35,7 @@ export class FormObject {
 	name: string;
 	status: string;
 	versionNo: string;
-	latestUpdateAt: Date;
+	updatedAt: Date;
 }
 
 export class FormListResponse {

@@ -7,5 +7,5 @@ export function errorHandler(
 	res: express.Response,
 	next: NextFunction
 ) {
-	return res.status(500).json(error(err.message, res.statusCode));
+	return res.status(500).json(error(err.message));
 }
