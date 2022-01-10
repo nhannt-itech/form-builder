@@ -23,15 +23,25 @@ class formService {
 	}
 	async list(formListRequest: FormListRequest): Promise<FormListResponse> {
 		const { search, status, page, pageSize } = formListRequest;
-		const totalPages = await db("Forms")
+		const { count } = (await db("Forms")
 			.count("name", "like", search + "%")
-			.first();
-		const { count } = totalPages as any;
+			.whereIn("status", status)
+			.first()) as any;
+
+		const latestFormVersions = db("FormVersions")
+			.select("formId")
+			.max({ updatedAt: "createdAt" })
+			.groupBy("formId")
+			.as("FormVersions");
+
 		const forms = await db("Forms")
 			.select<Array<FormObject>>("*")
 			.where("name", "like", search + "%")
+			.whereIn("status", status)
+			.join(latestFormVersions, "FormVersions.formId", "Forms.formId")
 			.limit(pageSize)
 			.offset((page - 1) * pageSize);
+
 		const nextPage = page * pageSize < count;
 		return {
 			forms,

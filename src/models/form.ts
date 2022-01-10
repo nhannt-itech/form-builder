@@ -26,7 +26,7 @@ export class FormRequest {
 //for listing
 export class FormListRequest {
 	search: string = "";
-	status: Array<string> = [];
+	status: Array<string> = ["Active", "Archived", "In Use", "Pending"];
 	page: number = 1;
 	pageSize: number = 10;
 }
