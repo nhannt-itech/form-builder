@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
 
-app.use("/admin", clientRoutes);
+app.use("/api", clientRoutes);
 
 app.use(errorHandler);
 

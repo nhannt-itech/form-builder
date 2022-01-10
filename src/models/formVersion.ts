@@ -1,6 +1,6 @@
 import { IsNotEmpty } from "class-validator";
 
-export class Form {
+export class FormVersion {
 	@IsNotEmpty()
 	formVersionId: string;
 
@@ -11,7 +11,7 @@ export class Form {
 	versionNo: string;
 
 	@IsNotEmpty()
-	formElements: string;
+	formElements: JSON;
 
 	@IsNotEmpty()
 	createdAt: Date;
