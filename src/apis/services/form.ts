@@ -1,12 +1,6 @@
 import db from "../../database/db";
 import { v4 as uuidv4 } from "uuid";
-import {
-	Form,
-	FormListRequest,
-	FormListResponse,
-	FormObject,
-	FormRequest,
-} from "../../models/form";
+import { Form, FormListRequest, FormListResponse, FormObject, FormRequest } from "../../models";
 
 class formService {
 	async save(formRequest: FormRequest): Promise<String> {
@@ -21,28 +15,32 @@ class formService {
 		});
 		return formId;
 	}
+
 	async list(formListRequest: FormListRequest): Promise<FormListResponse> {
 		const { search, status, page, pageSize } = formListRequest;
-		const { count } = (await db("Forms")
-			.count("name", "like", search + "%")
+		const offset = (page - 1) * pageSize;
+		const { totalPage } = (await db("Forms")
+			.count("name", "like", search + "% as totalPage")
 			.whereIn("status", status)
 			.first()) as any;
 
-		const latestFormVersions = db("FormVersions")
-			.select("formId")
-			.max({ updatedAt: "createdAt" })
-			.groupBy("formId")
-			.as("FormVersions");
-
+		const nextPage = page * pageSize < totalPage;
 		const forms = await db("Forms")
-			.select<Array<FormObject>>("*")
+			.select<Array<FormObject>>("name", "status", "description", "updatedAt")
 			.where("name", "like", search + "%")
 			.whereIn("status", status)
-			.join(latestFormVersions, "FormVersions.formId", "Forms.formId")
+			.join(
+				db("FormVersions")
+					.select("formId")
+					.max({ updatedAt: "createdAt" })
+					.groupBy("formId")
+					.as("FormVersions"),
+				"FormVersions.formId",
+				"Forms.formId"
+			)
 			.limit(pageSize)
-			.offset((page - 1) * pageSize);
+			.offset(offset);
 
-		const nextPage = page * pageSize < count;
 		return {
 			forms,
 			nextPage,

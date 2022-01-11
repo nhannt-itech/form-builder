@@ -8,7 +8,6 @@ class formController {
 		try {
 			let formRequest = new FormRequest();
 			Object.assign(formRequest, req.body);
-
 			const errors = await Validator(formRequest);
 			if (errors.length) {
 				res.status(400).json(error("Validations errors", errors));

@@ -4,13 +4,6 @@
  * @since   2020
  */
 
-interface ResponseObject {
-	results: any;
-	message: string;
-	success: boolean;
-	code: number;
-}
-
 export const error = (message: string, errors: any = null) => {
 	return {
 		message,
