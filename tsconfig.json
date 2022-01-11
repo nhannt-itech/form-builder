@@ -4,8 +4,9 @@
 		"strictPropertyInitialization": false,
 		"target": "es6",
 		"module": "commonjs",
-		"outDir": "./build",
+		"outDir": "./build/src",
 		"strict": true,
 		"esModuleInterop": true
-	}
+	},
+	"exclude": ["node_modules"]
 }

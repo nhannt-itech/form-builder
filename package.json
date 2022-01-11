@@ -2,12 +2,13 @@
   "name": "form-builder",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "migrate": "npx knex migrate:latest --knexfile src/database/knexfile.js",
     "migrate-down": "npx knex migrate:down --knexfile src/database/knexfile.js",
     "create-migration": "knex migrate:make -x ts --migrations-directory src/database/migrations",
+    "start": "ts-node build/src/index.js",
     "build": "tsc",
     "dev": "nodemon"
   },

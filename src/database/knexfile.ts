@@ -2,7 +2,7 @@ const knexfile = {
 	development: {
 		client: "postgresql",
 		connection: {
-			database: "formbuilder_db",
+			database: "formbuilder-db",
 			user: "postgres",
 			password: "1qaz!QAZ",
 		},
