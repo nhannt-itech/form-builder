@@ -5,16 +5,17 @@ services:
     build:
       context: .
       dockerfile: DockerFile
+    command: sh -c 'npm run migrate && npm start'
     depends_on:
       - postgres
     environment:
       DATABASE_URL: postgres://postgres:1qaz!QAZ@postgres:5432/formbuilder-db
       NODE_ENV: development
-      PORT: 8000
+      PORT: 4000
     ports:
-      - "8000:8000"
+      - "4000:4000"
   postgres:
-    container_name: postgres_container
+    container_name: postgres
     image: postgres
     ports:
       - "5432:5432"
