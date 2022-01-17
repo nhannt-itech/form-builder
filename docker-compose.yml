@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: DockerFile
-    command: sh -c 'npm run migrate && npm start'
+    command: sh -c 'npm start && npm run migrate'
     depends_on:
       - postgres
     environment:
@@ -24,9 +24,9 @@ services:
       - ./src/migrations/dbinit.sql:/docker-entrypoint-initdb.d/dbinit.sql
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-1qaz!QAZ}
-      POSTGRES_DB: ${POSTGRES_DB:-formbuilder-db}
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1qaz!QAZ
+      POSTGRES_DB: formbuilder-db
   pgadmin:
     container_name: pgadmin
     image: dpage/pgadmin4
