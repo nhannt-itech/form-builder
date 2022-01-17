@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const knexfile = {
     development: {
         client: "postgresql",
-        connection: {
-            database: "formbuilder_db",
+        connection: process.env.DATABASE_URL || {
+            database: "formbuilder-db",
             user: "postgres",
             password: "1qaz!QAZ",
         },

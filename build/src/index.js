@@ -30,7 +30,7 @@ const morgan_1 = __importDefault(require("morgan"));
 const client_1 = __importDefault(require("./routes/client"));
 dotenv.config();
 exports.app = (0, express_1.default)();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 8000;
 exports.app.use((0, morgan_1.default)("tiny"));
 exports.app.use(express_1.default.json());
 exports.app.use("/api", client_1.default);

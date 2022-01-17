@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: DockerFile
-    command: sh -c 'npm start && npm run migrate'
+    command: sh -c 'npm run migrate && npm start'
     depends_on:
       - postgres
     environment:
