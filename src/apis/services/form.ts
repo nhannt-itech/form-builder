@@ -1,6 +1,6 @@
 import db from "../../database/db";
 import { v4 as uuidv4 } from "uuid";
-import { Form, FormListRequest, FormListResponse, FormObject, FormRequest } from "../../models";
+import { FormListRequest, FormListResponse, FormObject, FormRequest } from "../../models";
 
 class formService {
 	async save(formRequest: FormRequest): Promise<String> {
@@ -40,10 +40,7 @@ class formService {
 			.limit(pageSize)
 			.offset(offset);
 
-		return {
-			forms,
-			nextPage,
-		};
+		return { forms, nextPage };
 	}
 }
 
