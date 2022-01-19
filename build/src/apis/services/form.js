@@ -20,14 +20,16 @@ class formService {
         return __awaiter(this, void 0, void 0, function* () {
             const { name, description, formElements } = formRequest;
             const formId = (0, uuid_1.v4)();
-            yield (0, db_1.default)("Forms").insert({ formId, name, description }).returning("formId");
-            yield (0, db_1.default)("FormVersions").insert({
-                formVersionId: (0, uuid_1.v4)(),
-                formId,
-                versionNo: "1",
-                formElements,
-            });
-            return formId;
+            return yield db_1.default.transaction((trx) => __awaiter(this, void 0, void 0, function* () {
+                yield trx("Forms").insert({ formId, name, description }, "formId");
+                yield trx("FormVersions").insert({
+                    formVersionId: (0, uuid_1.v4)(),
+                    formId,
+                    versionNo: "1",
+                    formElements,
+                });
+                return formId;
+            }));
         });
     }
     list(formListRequest) {
@@ -39,21 +41,19 @@ class formService {
                 .whereIn("status", status)
                 .first());
             const nextPage = page * pageSize < totalPage;
+            const lastFormVersions = (0, db_1.default)("FormVersions")
+                .select("formId")
+                .max({ updatedAt: "createdAt" })
+                .groupBy("formId")
+                .as("FormVersions");
             const forms = yield (0, db_1.default)("Forms")
                 .select("name", "status", "description", "updatedAt")
                 .where("name", "like", search + "%")
                 .whereIn("status", status)
-                .join((0, db_1.default)("FormVersions")
-                .select("formId")
-                .max({ updatedAt: "createdAt" })
-                .groupBy("formId")
-                .as("FormVersions"), "FormVersions.formId", "Forms.formId")
+                .join(lastFormVersions, "FormVersions.formId", "Forms.formId")
                 .limit(pageSize)
                 .offset(offset);
-            return {
-                forms,
-                nextPage,
-            };
+            return { forms, nextPage };
         });
     }
 }

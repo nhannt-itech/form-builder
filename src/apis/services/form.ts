@@ -12,7 +12,7 @@ class formService {
 			await trx("FormVersions").insert({
 				formVersionId: uuidv4(),
 				formId,
-				versionNo: "1",
+				versionNo: null,
 				formElements,
 			});
 			return formId;

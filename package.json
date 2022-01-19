@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "db": "npx knex migrate:latest --knexfile build/src/database/knexfile.js",
-    "migrate": "npx knex migrate:latest --knexfile src/database/knexfile.js",
+    "migrate-up": "npx knex migrate:latest --knexfile src/database/knexfile.js",
     "migrate-down": "npx knex migrate:down --knexfile src/database/knexfile.js",
     "create-migration": "knex migrate:make -x ts --migrations-directory src/database/migrations",
     "start": "ts-node build/src/index.js",

@@ -12,13 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.down = exports.up = void 0;
 function up(knex) {
     return __awaiter(this, void 0, void 0, function* () {
-        knex.schema.createTable("Forms", (table) => {
+        return knex.schema
+            .createTable("Forms", (table) => {
             table.uuid("formId").primary();
             table.string("name").notNullable().defaultTo("Form title");
             table.string("status").notNullable().defaultTo("Active");
             table.string("description");
-        });
-        knex.schema.createTable("FormVersions", (table) => {
+        })
+            .createTable("FormVersions", (table) => {
             table.uuid("formVersionId").primary();
             table.uuid("formId").notNullable();
             table.string("versionNo").notNullable();
@@ -31,8 +32,7 @@ function up(knex) {
 exports.up = up;
 function down(knex) {
     return __awaiter(this, void 0, void 0, function* () {
-        knex.schema.dropTable("FormVersions");
-        knex.schema.dropTable("Forms");
+        return knex.schema.dropTable("FormVersions").dropTable("Forms");
     });
 }
 exports.down = down;
