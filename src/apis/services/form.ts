@@ -2,7 +2,7 @@ import db from "../../database/db";
 import { v4 as uuidv4 } from "uuid";
 import { FormListRequest, FormListResponse, FormObject, FormRequest } from "../../models";
 
-class formService {
+export default class FormService {
 	async save(formRequest: FormRequest): Promise<String> {
 		const { name, description, formElements } = formRequest;
 		const formId = uuidv4();
@@ -12,7 +12,7 @@ class formService {
 			await trx("FormVersions").insert({
 				formVersionId: uuidv4(),
 				formId,
-				versionNo: null,
+				versionNo: "1",
 				formElements,
 			});
 			return formId;
@@ -22,16 +22,21 @@ class formService {
 	async list(formListRequest: FormListRequest): Promise<FormListResponse> {
 		const { search, status, page, pageSize } = formListRequest;
 		const offset = (page - 1) * pageSize;
+
 		const { totalPage } = (await db("Forms")
-			.count("name", "like", search + "% as totalPage")
+			.where("name", "like", search + "%")
+			.count("name", "like", search + "%", "as totalPage")
 			.whereIn("status", status)
 			.first()) as any;
+
 		const nextPage = page * pageSize < totalPage;
+
 		const lastFormVersions = db("FormVersions")
 			.select("formId")
 			.max({ updatedAt: "createdAt" })
 			.groupBy("formId")
 			.as("FormVersions");
+
 		const forms = await db("Forms")
 			.select<Array<FormObject>>("name", "status", "description", "updatedAt")
 			.where("name", "like", search + "%")
@@ -43,5 +48,3 @@ class formService {
 		return { forms, nextPage };
 	}
 }
-
-export const FormService = new formService();

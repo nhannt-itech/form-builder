@@ -4,8 +4,8 @@ services:
     container_name: form-builder
     build:
       context: .
-      dockerfile: DockerFile
-    command: sh -c 'npm run migrate-up && npm start'
+      dockerfile: Dockerfile.dev
+    command: sh -c 'npm run migrate-up && npm run dev'
     depends_on:
       - postgres
     environment:
