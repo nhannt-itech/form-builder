@@ -9,7 +9,7 @@
     "migrate-up": "npx knex migrate:latest --knexfile src/database/knexfile.js",
     "migrate-down": "npx knex migrate:down --knexfile src/database/knexfile.js",
     "create-migration": "knex migrate:make -x ts --migrations-directory src/database/migrations",
-    "start": "ts-node build/src/index.js",
+    "start": "node build/src/index.js",
     "build": "tsc",
     "dev": "nodemon"
   },
