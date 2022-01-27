@@ -24,8 +24,8 @@ export default class FormService {
 		const offset = (page - 1) * pageSize;
 
 		const { totalPage } = (await db("Forms")
-			.where("name", "like", search + "%")
-			.count("name", "like", search + "%", "as totalPage")
+			.where("name", "like", "%" + search + "%")
+			.count("name", "like", "%" + search + "%", "as totalPage")
 			.whereIn("status", status)
 			.first()) as any;
 
@@ -39,7 +39,7 @@ export default class FormService {
 
 		const forms = await db("Forms")
 			.select<Array<FormObject>>("name", "status", "description", "updatedAt")
-			.where("name", "like", search + "%")
+			.where("name", "like", "%" + search + "%")
 			.whereIn("status", status)
 			.join(lastFormVersions, "FormVersions.formId", "Forms.formId")
 			.limit(pageSize)
