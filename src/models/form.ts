@@ -14,6 +14,8 @@ export class Form {
 }
 //
 export class FormRequest {
+	formId: string;
+
 	@IsNotEmpty()
 	name: string;
 

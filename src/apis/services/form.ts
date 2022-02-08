@@ -1,6 +1,7 @@
 import db from "../../database/db";
 import { v4 as uuidv4 } from "uuid";
 import { FormListRequest, FormListResponse, FormObject, FormRequest } from "../../models";
+import { CompareObjects } from "../../utils";
 
 export default class FormService {
 	async save(formRequest: FormRequest): Promise<String> {
@@ -19,6 +20,36 @@ export default class FormService {
 		});
 	}
 
+	async update(formRequest: FormRequest): Promise<boolean> {
+		const { formId, name, description, formElements } = formRequest;
+		const form = await db("Forms").where("formId", formId).first();
+		if (form) {
+			const { latestVersion } = (await db("FormVersions")
+				.select("formId")
+				.where("formId", formId)
+				.max({ latestVersion: "versionNo" })
+				.groupBy("formId")
+				.first()) as any;
+			const latestFormVersion = await db("FormVersions")
+				.where("formId", formId)
+				.where("versionNo", latestVersion)
+				.first();
+
+			return await db.transaction(async (trx) => {
+				await trx("Forms").where("formId", formId).update({ name, description });
+				if (!CompareObjects(latestFormVersion.formElements, formElements)) {
+					await trx("FormVersions").insert({
+						formVersionId: uuidv4(),
+						formId,
+						versionNo: Number(latestFormVersion.versionNo) + 1,
+						formElements,
+					});
+				}
+				return true;
+			});
+		} else return false;
+	}
+
 	async list(formListRequest: FormListRequest): Promise<FormListResponse> {
 		const { search, status, page, pageSize } = formListRequest;
 		const offset = (page - 1) * pageSize;
@@ -31,17 +62,28 @@ export default class FormService {
 
 		const nextPage = page * pageSize < totalPage;
 
-		const lastFormVersions = db("FormVersions")
-			.select("formId")
-			.max({ updatedAt: "createdAt" })
-			.groupBy("formId")
+		const latestFormVersions = db
+			.from("FormVersions")
+			.innerJoin(
+				db("FormVersions")
+					.select("formId")
+					.max({ versionNo: "versionNo" })
+					.groupBy("formId")
+					.as("b"),
+				function () {
+					this.on("FormVersions.formId", "b.formId").on("FormVersions.versionNo", "b.versionNo");
+				}
+			)
+			.select("FormVersions.formId", "FormVersions.versionNo", {
+				updatedAt: "FormVersions.createdAt",
+			})
 			.as("FormVersions");
 
 		const forms = await db("Forms")
-			.select<Array<FormObject>>("name", "status", "description", "updatedAt")
+			.select<Array<FormObject>>("name", "status", "versionNo", "updatedAt")
 			.where("name", "like", "%" + search + "%")
 			.whereIn("status", status)
-			.join(lastFormVersions, "FormVersions.formId", "Forms.formId")
+			.join(latestFormVersions, "FormVersions.formId", "Forms.formId")
 			.limit(pageSize)
 			.offset(offset);
 

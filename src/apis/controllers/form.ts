@@ -17,6 +17,19 @@ export default class FormController {
 			next(err);
 		}
 	}
+	async update(req: Request, res: Response, next: NextFunction) {
+		try {
+			let formRequest = new FormRequest();
+			Object.assign(formRequest, req.body);
+			Object.assign(formRequest, req.query);
+			await Validator(formRequest, res);
+
+			const result = await formService.update(formRequest);
+			res.status(200).json({ result });
+		} catch (err) {
+			next(err);
+		}
+	}
 	async list(req: Request, res: Response, next: NextFunction) {
 		try {
 			let formListRequest = new FormListRequest();

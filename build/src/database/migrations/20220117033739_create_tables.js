@@ -24,7 +24,7 @@ function up(knex) {
             table.uuid("formId").notNullable();
             table.string("versionNo").notNullable();
             table.jsonb("formElements").notNullable();
-            table.date("createdAt").defaultTo(knex.fn.now());
+            table.dateTime("createdAt").defaultTo(knex.fn.now());
             table.foreign("formId").references("formId").inTable("Forms");
         });
     });

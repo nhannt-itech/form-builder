@@ -11,9 +11,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Validator = void 0;
 const class_validator_1 = require("class-validator");
-const Validator = (object) => __awaiter(void 0, void 0, void 0, function* () {
+const utils_1 = require("../utils");
+const Validator = (object, res) => __awaiter(void 0, void 0, void 0, function* () {
     const resErrors = yield (0, class_validator_1.validate)(object);
     const errors = resErrors.map((item) => item.constraints);
-    return errors;
+    if (errors.length) {
+        res.status(400).json((0, utils_1.error)("Validations errors", errors));
+    }
 });
 exports.Validator = Validator;
