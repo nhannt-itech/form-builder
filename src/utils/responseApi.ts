@@ -5,8 +5,14 @@
  */
 
 export const error = (message: string, errors: any = null) => {
-	return {
-		message,
-		errors,
-	};
+	if (errors) {
+		return {
+			message,
+			errors,
+		};
+	} else {
+		return {
+			message,
+		};
+	}
 };
